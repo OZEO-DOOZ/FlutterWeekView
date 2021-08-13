@@ -21,7 +21,7 @@ class FullWeekView
   final List<WeekEvent> events;
 
   /// The day view date.
-  final DateTime date;
+  late final DateTime date;
 
   /// The day bar style.
   final DayBarStyle dayBarStyle;
@@ -37,25 +37,22 @@ class FullWeekView
 
   /// Creates a new day view instance.
   FullWeekView({
-    List<WeekEvent> events,
-    DateTime date,
-    DayViewStyle style,
-    HoursColumnStyle hoursColumnStyle,
-    DayBarStyle dayBarStyle,
-    List<Color> eventColors,
-    DayViewController controller,
-    bool inScrollableWidget,
-    TimeOfDay minimumTime,
-    TimeOfDay maximumTime,
-    HourMinute initialTime,
-    bool userZoomable,
-    EvenSelectCallback onPressSelect,
-    EvenSelectCallback onDragSelect,
+    List<WeekEvent>? events,
+    DayViewStyle? style,
+    HoursColumnStyle? hoursColumnStyle,
+    DayBarStyle? dayBarStyle,
+    List<Color>? eventColors,
+    DayViewController? controller,
+    bool? inScrollableWidget,
+    TimeOfDay? minimumTime,
+    TimeOfDay? maximumTime,
+    HourMinute? initialTime,
+    bool? userZoomable,
+    required this.onPressSelect,
+    required this.onDragSelect,
   })  : date = DateTime.now(),
         events = events ?? [],
         dayBarStyle = dayBarStyle ?? DayBarStyle.fromDate(date: DateTime.now()),
-        onPressSelect = onPressSelect,
-        onDragSelect = onDragSelect,
         eventColors =
             eventColors ?? [const Color(0xffcdebef), const Color(0xff40798d)],
         super(
@@ -64,13 +61,11 @@ class FullWeekView
           controller: controller ?? DayViewController(),
           inScrollableWidget: inScrollableWidget ?? true,
           minimumTime: HourMinute.fromTimeOfDay(
-                timeOfDay: minimumTime ?? const TimeOfDay(hour: 6, minute: 0),
-              ) ??
-              HourMinute.MIN,
+            timeOfDay: minimumTime ?? const TimeOfDay(hour: 6, minute: 0),
+          ),
           maximumTime: HourMinute.fromTimeOfDay(
-                timeOfDay: maximumTime ?? const TimeOfDay(hour: 23, minute: 59),
-              ) ??
-              HourMinute.MAX,
+            timeOfDay: maximumTime ?? const TimeOfDay(hour: 23, minute: 59),
+          ),
           initialTime: (initialTime ?? HourMinute.MIN).atDate(DateTime.now()),
           userZoomable: userZoomable ?? false,
           hoursColumnTimeBuilder: DefaultBuilders.defaultHoursColumnTimeBuilder,
@@ -84,15 +79,15 @@ class FullWeekView
 
 /// The day view state.
 class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
-  double maxHeight;
-  Offset selectionStart;
-  Offset selectionUpdate;
+  double? maxHeight;
+  Offset? selectionStart;
+  late Offset selectionUpdate;
 
   @override
   void initState() {
     super.initState();
     scheduleScrollToInitialTime();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (mounted) {
         setState(createEventsDrawProperties);
       }
@@ -150,7 +145,7 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
       return LayoutBuilder(
         builder: (context, constraints) {
           maxHeight ??= constraints.maxHeight - widget.style.headerSize;
-          updateHourRowHeight(maxHeight);
+          updateHourRowHeight(maxHeight!);
           return mainWidget;
         },
       );
@@ -163,7 +158,7 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           maxHeight ??= constraints.maxHeight - widget.style.headerSize;
-          if (calculateHeight() <= maxHeight) {
+          if (calculateHeight() <= maxHeight!) {
             updateMinZoom(widget.controller.zoomFactor);
           }
           return mainWidget;
@@ -197,27 +192,30 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
           final timeStartObj = HourMinute.fromTimeOfDay(timeOfDay: entry.start);
           final timeEndObj = HourMinute.fromTimeOfDay(timeOfDay: entry.end);
           return entry.day
-              .map((e) => Positioned(
+              .map<Widget>((e) => Positioned(
                     top: calculateTopOffset(timeStartObj),
                     left: (e - 1) * eventWidth,
                     child: InkWell(
                       onTap: () =>
-                          entry.onPress != null ? entry.onPress(entry) : null,
+                          entry.onPress != null ? entry.onPress!(entry) : null,
                       onLongPress: () => entry.onLongPress != null
-                          ? entry.onLongPress(entry)
+                          ? entry.onLongPress!(entry)
                           : null,
                       child: Container(
                         width: eventWidth,
                         height: calculateTopOffset(timeEndObj) -
                             calculateTopOffset(timeStartObj),
-                        child: entry.child,
                         decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: widget.eventColors),
-                            border: Border.all(
-                                color: const Color(0xffd8eaf3), width: 0.5)),
+                          gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: widget.eventColors),
+                          border: Border.all(
+                            color: const Color(0xffd8eaf3),
+                            width: 0.5,
+                          ),
+                        ),
+                        child: entry.child,
                       ),
                     ),
                   ))
@@ -260,9 +258,9 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
       onPanEnd: isMinScale
           ? (details) {
               final startTime = calculateTimeOfDay(
-                  min(selectionStart.dy, selectionUpdate.dy));
+                  min(selectionStart!.dy, selectionUpdate.dy));
               final endTime = calculateTimeOfDay(
-                  max(selectionStart.dy, selectionUpdate.dy));
+                  max(selectionStart!.dy, selectionUpdate.dy));
               widget.onDragSelect(WeekEvent(
                 start: startTime,
                 end: endTime,
@@ -320,18 +318,17 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
   /// Create indicator box wiget
   Widget indicatorBuilder(double eventWidth) {
     final left =
-        (min(selectionUpdate.dx, selectionStart.dx) / eventWidth).floor() *
+        (min(selectionUpdate.dx, selectionStart!.dx) / eventWidth).floor() *
             eventWidth;
     final width =
-        (max(selectionUpdate.dx, selectionStart.dx) / eventWidth).floor() *
+        (max(selectionUpdate.dx, selectionStart!.dx) / eventWidth).floor() *
             eventWidth;
     return Positioned(
-      top: min(selectionStart.dy, selectionUpdate.dy),
+      top: min(selectionStart!.dy, selectionUpdate.dy),
       left: left,
       child: Container(
         width: (width - left).abs() + eventWidth,
-        height: ((selectionUpdate.dy ?? selectionStart.dy) - selectionStart.dy)
-            .abs(),
+        height: (selectionUpdate.dy - selectionStart!.dy).abs(),
         decoration: BoxDecoration(
             color: const Color(0x33cdebef),
             border: Border.all(color: const Color(0xff40798d), width: 0.5)),
@@ -356,8 +353,9 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
   List<int> _getListDay(double eventWidth) {
     List<int> list = [];
     int start =
-        (min(selectionStart.dx, selectionUpdate.dx) / eventWidth).floor();
-    int end = (max(selectionStart.dx, selectionUpdate.dx) / eventWidth).floor();
+        (min(selectionStart!.dx, selectionUpdate.dx) / eventWidth).floor();
+    int end =
+        (max(selectionStart!.dx, selectionUpdate.dx) / eventWidth).floor();
     while (start <= end) {
       list.add(start + 1);
       start += 1;

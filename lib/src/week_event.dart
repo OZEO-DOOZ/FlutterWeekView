@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Represents a flutter week view event.
 class WeekEvent extends Comparable<WeekEvent> {
-  final String id;
+  final String? id;
 
   /// The event start date & time.
   final TimeOfDay start;
@@ -18,22 +18,20 @@ class WeekEvent extends Comparable<WeekEvent> {
   /// Custom Widget inside event
   final Widget child;
 
-  final Function onPress;
+  final Function? onPress;
 
-  final Function onLongPress;
+  final Function? onLongPress;
 
   /// Creates a new flutter week view event instance.
   WeekEvent({
     this.id,
-    @required this.start,
-    @required this.end,
-    @required this.day,
-    this.child,
+    required this.start,
+    required this.end,
+    required this.day,
+    this.child = const SizedBox.shrink(),
     this.onPress,
     this.onLongPress,
-  })  : assert(start != null),
-        assert(end != null),
-        assert(day != null);
+  });
 
   @override
   int compareTo(WeekEvent other) {
@@ -49,12 +47,12 @@ class WeekEvent extends Comparable<WeekEvent> {
   }
 
   WeekEvent copyWith({
-    TimeOfDay start,
-    TimeOfDay end,
-    List<int> day,
-    Widget child,
-    Function onPress,
-    Function onLongPress,
+    TimeOfDay? start,
+    TimeOfDay? end,
+    List<int>? day,
+    Widget? child,
+    Function? onPress,
+    Function? onLongPress,
   }) =>
       WeekEvent(
         start: start ?? this.start,

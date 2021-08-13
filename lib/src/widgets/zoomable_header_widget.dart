@@ -191,6 +191,20 @@ abstract class ZoomableHeadersWidgetState<W extends ZoomableHeadersWidget>
           minimumTime: minimumTime ?? widget.minimumTime,
           hourRowHeight: hourRowHeight ?? this.hourRowHeight);
 
+  /// Calculates the hour of a given top offset.
+  TimeOfDay calculateTimeOfDay(double offset, {double? hourRowHeight}) {
+    final ratio = offset / (hourRowHeight ?? this.hourRowHeight);
+    final h = ratio.floor() + widget.minimumTime.hour;
+    final m = (ratio - ratio.floor()) * 60 + widget.minimumTime.minute;
+    return TimeOfDay(hour: h == 24 ? 23 : h, minute: h == 24 ? 59 : m.floor());
+  }
+
+  List<int> calculateDay(double offset, double eventWidth) {
+    List<int> listDay = [];
+    listDay.add((offset / eventWidth).floor() + 1);
+    return listDay;
+  }
+
   /// Calculates the widget height.
   double calculateHeight([double? hourRowHeight]) =>
       calculateTopOffset(widget.maximumTime, hourRowHeight: hourRowHeight);

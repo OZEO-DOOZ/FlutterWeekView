@@ -9,7 +9,7 @@ abstract class ZoomController {
   final double zoomCoefficient;
 
   /// The minimum zoom factor.
-  final double minZoom;
+  double minZoom;
 
   /// The maximum zoom factor.
   final double maxZoom;
