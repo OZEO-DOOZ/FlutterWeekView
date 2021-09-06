@@ -48,6 +48,7 @@ class FullWeekView
     TimeOfDay? maximumTime,
     HourMinute? initialTime,
     bool? userZoomable,
+    bool? isRTL,
     required this.onPressSelect,
     required this.onDragSelect,
   })  : date = DateTime.now(),
@@ -71,6 +72,7 @@ class FullWeekView
           hoursColumnTimeBuilder: DefaultBuilders.defaultHoursColumnTimeBuilder,
           currentTimeIndicatorBuilder:
               DefaultBuilders.defaultCurrentTimeIndicatorBuilder,
+          isRTL: isRTL ?? false,
         );
 
   @override
