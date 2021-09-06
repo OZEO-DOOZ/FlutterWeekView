@@ -22,7 +22,8 @@ typedef DayBarTapCallback = Function(DateTime date);
 typedef CurrentTimeIndicatorBuilder = Widget? Function(
     DayViewStyle dayViewStyle,
     TopOffsetCalculator topOffsetCalculator,
-    double hoursColumnWidth);
+    double hoursColumnWidth,
+    bool isRtl);
 
 /// Allows to build the time displayed on the side border.
 typedef HoursColumnTimeBuilder = Widget? Function(
@@ -67,6 +68,9 @@ abstract class ZoomableHeadersWidget<S extends ZoomableHeaderWidgetStyle,
   /// The current day view controller.
   final C controller;
 
+  /// Add Rtl support
+  final bool isRtl;
+
   /// Creates a new zoomable headers widget instance.
   const ZoomableHeadersWidget({
     required this.style,
@@ -81,6 +85,7 @@ abstract class ZoomableHeadersWidget<S extends ZoomableHeaderWidgetStyle,
     this.onDayBarTappedDown,
     required this.controller,
     this.hoursColumnTimeBuilder,
+    required this.isRtl,
   });
 }
 
