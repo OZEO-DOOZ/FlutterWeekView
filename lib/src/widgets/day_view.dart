@@ -35,7 +35,7 @@ class DayView extends ZoomableHeadersWidget<DayViewStyle, DayViewController> {
     DayBarStyle? dayBarStyle,
     DayViewController? controller,
     bool? inScrollableWidget,
-    bool? isRtl,
+    bool? isRTL,
     HourMinute? minimumTime,
     HourMinute? maximumTime,
     HourMinute? initialTime,
@@ -52,7 +52,7 @@ class DayView extends ZoomableHeadersWidget<DayViewStyle, DayViewController> {
           hoursColumnStyle: hoursColumnStyle ?? const HoursColumnStyle(),
           controller: controller ?? DayViewController(),
           inScrollableWidget: inScrollableWidget ?? true,
-          isRtl: isRtl ?? false,
+          isRTL: isRTL ?? false,
           minimumTime: minimumTime ?? HourMinute.MIN,
           maximumTime: maximumTime ?? HourMinute.MAX,
           initialTime: initialTime?.atDate(date) ??
@@ -113,8 +113,8 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView> {
           mainWidget,
           Positioned(
             top: 0,
-            left: widget.isRtl ? 0 : widget.hoursColumnStyle.width,
-            right: widget.isRtl ? widget.hoursColumnStyle.width : 0,
+            left: widget.isRTL ? 0 : widget.hoursColumnStyle.width,
+            right: widget.isRTL ? widget.hoursColumnStyle.width : 0,
             child: DayBar.fromHeadersWidgetState(
               parent: widget,
               date: widget.date,
@@ -163,7 +163,7 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView> {
     if (widget.hoursColumnStyle.width > 0) {
       children.add(Positioned(
         top: 0,
-        left: widget.isRtl ? null : 0,
+        left: widget.isRTL ? null : 0,
         child: HoursColumn.fromHeadersWidgetState(parent: this),
       ));
     }
@@ -173,7 +173,7 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView> {
         widget.maximumTime.atDate(widget.date).isAfter(DateTime.now())) {
       Widget? currentTimeIndicator = (widget.currentTimeIndicatorBuilder ??
               DefaultBuilders.defaultCurrentTimeIndicatorBuilder)(widget.style,
-          calculateTopOffset, widget.hoursColumnStyle.width, widget.isRtl);
+          calculateTopOffset, widget.hoursColumnStyle.width, widget.isRTL);
       if (currentTimeIndicator != null) {
         children.add(currentTimeIndicator);
       }
@@ -220,7 +220,7 @@ class _DayViewState extends ZoomableHeadersWidgetState<DayView> {
     EventGrid eventsGrid = EventGrid();
     for (FlutterWeekViewEvent event in List.of(events)) {
       EventDrawProperties drawProperties = eventsDrawProperties[event] ??
-          EventDrawProperties(widget, event, widget.isRtl);
+          EventDrawProperties(widget, event, widget.isRTL);
       if (!drawProperties.shouldDraw) {
         events.remove(event);
         continue;

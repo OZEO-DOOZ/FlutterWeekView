@@ -68,8 +68,8 @@ abstract class ZoomableHeadersWidget<S extends ZoomableHeaderWidgetStyle,
   /// The current day view controller.
   final C controller;
 
-  /// Add Rtl support
-  final bool isRtl;
+  /// Whether the widget should be aligned from right to left.
+  final bool isRTL;
 
   /// Creates a new zoomable headers widget instance.
   const ZoomableHeadersWidget({
@@ -85,7 +85,7 @@ abstract class ZoomableHeadersWidget<S extends ZoomableHeaderWidgetStyle,
     this.onDayBarTappedDown,
     required this.controller,
     this.hoursColumnTimeBuilder,
-    required this.isRtl,
+    required this.isRTL,
   });
 }
 
