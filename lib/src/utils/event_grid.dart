@@ -103,8 +103,11 @@ class EventDrawProperties {
   /// The end time.
   DateTime? end;
 
+  /// Whether the event should be aligned from right to left.
+  final bool isRTL;
+
   /// Creates a new flutter week view event draw properties from the specified day view and the specified day view event.
-  EventDrawProperties(DayView dayView, FlutterWeekViewEvent event) {
+  EventDrawProperties(DayView dayView, FlutterWeekViewEvent event, this.isRTL) {
     DateTime minimum = dayView.minimumTime.atDate(dayView.date);
     DateTime maximum = dayView.maximumTime.atDate(dayView.date);
 
@@ -159,7 +162,8 @@ class EventDrawProperties {
       Positioned(
         top: top,
         height: height,
-        left: left,
+        left: isRTL ? null : left,
+        right: isRTL ? left : null,
         width: width,
         child: event.build(context, dayView, height!, width!),
       );

@@ -81,8 +81,11 @@ class DefaultBuilders {
       dates[index];
 
   /// Builds the current time indicator builder.
-  static Widget defaultCurrentTimeIndicatorBuilder(DayViewStyle dayViewStyle,
-      TopOffsetCalculator topOffsetCalculator, double hoursColumnWidth) {
+  static Widget defaultCurrentTimeIndicatorBuilder(
+      DayViewStyle dayViewStyle,
+      TopOffsetCalculator topOffsetCalculator,
+      double hoursColumnWidth,
+      bool isRtl) {
     List<Widget> children = [
       if (dayViewStyle.currentTimeRuleHeight > 0 &&
           dayViewStyle.currentTimeRuleColor != null)
@@ -111,8 +114,8 @@ class DefaultBuilders {
 
     return Positioned(
       top: topOffsetCalculator(HourMinute.now()),
-      left: hoursColumnWidth,
-      right: 0,
+      left: isRtl ? 0 : hoursColumnWidth,
+      right: isRtl ? hoursColumnWidth : 0,
       child: Row(children: children),
     );
   }

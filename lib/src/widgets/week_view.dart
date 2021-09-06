@@ -63,6 +63,7 @@ class WeekView
     HoursColumnTimeBuilder? hoursColumnTimeBuilder,
     HoursColumnTapCallback? onHoursColumnTappedDown,
     DayBarTapCallback? onDayBarTappedDown,
+    bool? isRTL,
   }) : this.builder(
           events: events,
           dateCount: dates.length,
@@ -74,6 +75,7 @@ class WeekView
           hoursColumnStyle: hoursColumnStyle,
           controller: controller,
           inScrollableWidget: inScrollableWidget,
+          isRTL: isRTL,
           minimumTime: minimumTime,
           maximumTime: maximumTime,
           initialTime: initialTime,
@@ -95,6 +97,7 @@ class WeekView
     HoursColumnStyle? hoursColumnStyle,
     WeekViewController? controller,
     bool? inScrollableWidget,
+    bool? isRTL,
     HourMinute? minimumTime,
     HourMinute? maximumTime,
     DateTime? initialTime,
@@ -115,6 +118,7 @@ class WeekView
           hoursColumnStyle: hoursColumnStyle ?? const HoursColumnStyle(),
           controller: controller ?? WeekViewController(),
           inScrollableWidget: inScrollableWidget ?? true,
+          isRTL: isRTL ?? false,
           minimumTime: minimumTime ?? HourMinute.MIN,
           maximumTime: maximumTime ?? HourMinute.MAX,
           initialTime: initialTime ?? DateTime.now(),
@@ -189,8 +193,7 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView> {
   void scrollToInitialTime() {
     super.scrollToInitialTime();
 
-    if (horizontalScrollController == null ||
-        !horizontalScrollController!.hasClients) {
+    if (horizontalScrollController == null) {
       return;
     }
 
@@ -241,8 +244,8 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView> {
         mainWidget,
         Positioned(
           top: 0,
-          left: widget.hoursColumnStyle.width,
-          right: 0,
+          left: widget.isRTL ? 0 : widget.hoursColumnStyle.width,
+          right: widget.isRTL ? widget.hoursColumnStyle.width : 0,
           child: _AutoScrollDayBar(state: this),
         ),
         Container(
@@ -260,7 +263,9 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView> {
           SizedBox(
             height: calculateHeight() + widget.style.headerSize,
             child: ListView.builder(
-              padding: EdgeInsets.only(left: widget.hoursColumnStyle.width),
+              padding: EdgeInsets.only(
+                  left: widget.isRTL ? 0 : widget.hoursColumnStyle.width,
+                  right: widget.isRTL ? widget.hoursColumnStyle.width : 0),
               controller: horizontalScrollController,
               scrollDirection: Axis.horizontal,
               physics: widget.inScrollableWidget
@@ -286,6 +291,7 @@ class _WeekViewState extends ZoomableHeadersWidgetState<WeekView> {
       padding: EdgeInsets.only(top: widget.style.headerSize),
       width: dayViewWidth,
       child: DayView(
+        isRTL: widget.isRTL,
         date: date,
         events: widget.events,
         style: widget.dayViewStyleBuilder(date).copyWith(headerSize: 0),
