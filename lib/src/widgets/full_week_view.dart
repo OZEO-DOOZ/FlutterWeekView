@@ -175,13 +175,12 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
     super.onZoomFactorChanged(controller, details);
 
     if (mounted) {
-      setState(createEventsDrawProperties);
+      setState(() {});
     }
   }
 
   @override
-  DayViewStyle get currentDayViewStyle =>
-      widget.style.copyWith(hourRowHeight: hourRowHeight);
+  DayViewStyle get currentDayViewStyle => widget.style;
 
   /// Creates all event wiget, indicator Box and action drag selection
   Widget weekBuilder() {
