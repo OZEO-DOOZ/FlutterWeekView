@@ -6,7 +6,6 @@ import 'package:flutter_week_view/src/styles/day_bar.dart';
 import 'package:flutter_week_view/src/styles/day_view.dart';
 import 'package:flutter_week_view/src/styles/hours_column.dart';
 import 'package:flutter_week_view/src/utils/builders.dart';
-import 'package:flutter_week_view/src/utils/event_grid.dart';
 import 'package:flutter_week_view/src/utils/hour_minute.dart';
 import 'package:flutter_week_view/src/utils/scroll.dart';
 import 'package:flutter_week_view/src/widgets/hours_column.dart';
@@ -88,10 +87,9 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
   @override
   void initState() {
     super.initState();
-    scheduleScrollToInitialTime();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    Future.delayed(Duration.zero, () {
       if (mounted) {
-        setState(createEventsDrawProperties);
+        setState(() {});
       }
     });
   }
@@ -99,7 +97,11 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
   @override
   void didUpdateWidget(FullWeekView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    createEventsDrawProperties();
+    Future.delayed(Duration.zero, () {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   void updateMinZoom(double minZoom) {
@@ -175,13 +177,12 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
     super.onZoomFactorChanged(controller, details);
 
     if (mounted) {
-      setState(createEventsDrawProperties);
+      setState(() {});
     }
   }
 
   @override
-  DayViewStyle get currentDayViewStyle =>
-      widget.style.copyWith(hourRowHeight: hourRowHeight);
+  DayViewStyle get currentDayViewStyle => widget.style;
 
   /// Creates all event wiget, indicator Box and action drag selection
   Widget weekBuilder() {
@@ -336,19 +337,6 @@ class _FullWeekViewState extends ZoomableHeadersWidgetState<FullWeekView> {
             border: Border.all(color: const Color(0xff40798d), width: 0.5)),
       ),
     );
-  }
-
-  /// Creates the events draw properties and add them to the current list.
-  void createEventsDrawProperties() {
-    EventGrid eventsGrid = EventGrid();
-
-    if (eventsGrid.drawPropertiesList.isNotEmpty) {
-      double eventsColumnWidth =
-          (context.findRenderObject() as RenderBox).size.width -
-              widget.hoursColumnStyle.width;
-      eventsGrid.processEvents(
-          widget.hoursColumnStyle.width, eventsColumnWidth);
-    }
   }
 
   /// Get list Day of week
