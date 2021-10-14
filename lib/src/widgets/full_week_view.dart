@@ -6,7 +6,6 @@ import 'package:flutter_week_view/src/styles/day_bar.dart';
 import 'package:flutter_week_view/src/styles/day_view.dart';
 import 'package:flutter_week_view/src/styles/hours_column.dart';
 import 'package:flutter_week_view/src/utils/builders.dart';
-import 'package:flutter_week_view/src/utils/event_grid.dart';
 import 'package:flutter_week_view/src/utils/hour_minute.dart';
 import 'package:flutter_week_view/src/utils/scroll.dart';
 import 'package:flutter_week_view/src/widgets/hours_column.dart';
